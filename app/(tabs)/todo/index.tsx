@@ -1,4 +1,4 @@
-import { View, Text, TextInput, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, FlatList, Pressable, ActivityIndicator, Button } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import NotesEndpoints from "../../../services/NotesEndpoints";
@@ -13,6 +13,10 @@ export default function IndexPage() {
 
 	const [input, setInput] = useState("");
 	const router = useRouter();
+
+	const deleteTodo = (id: string) => {
+		NotesEndpoints.deleteNote(id);
+	};
 
 	const addTodo = () => {
 		NotesEndpoints.createNote({ name: input });
@@ -50,9 +54,12 @@ export default function IndexPage() {
 							}
 
 							return (
-								<Pressable onPress={() => handlePress(item.name)}>
-									<Text style={{ color: "blue" }}>{substring}</Text>
-								</Pressable>
+								<View className="flex-row justify-between">
+									<Pressable onPress={() => handlePress(item.name)}>
+										<Text style={{ color: "blue" }}>{substring}</Text>
+									</Pressable>
+									<Button title="X" onPress={() => deleteTodo(item.id)} />
+								</View>
 							);
 						}}
 						keyExtractor={(t) => t.id}
