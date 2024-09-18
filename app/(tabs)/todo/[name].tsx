@@ -7,13 +7,11 @@ export default function TodoPage() {
 
 	return (
 		<View className="flex-1">
-			<View className="justify-center items-center bg-red-400 basis-1/3">
+			<View className="justify-center items-center p-5">
 				<Stack.Screen options={{ headerTitle: name }} />
 				<Text>{name}</Text>
 			</View>
-			<View className="basis-2/3 bg-blue-300">
-				<Text>Hej</Text>
-			</View>
+			
 		</View>
 	);
 }
