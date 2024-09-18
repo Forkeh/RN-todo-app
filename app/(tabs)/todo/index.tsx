@@ -23,8 +23,11 @@ export default function IndexPage() {
 		setInput("");
 	};
 
-	const handlePress = (name: string) => {
-		router.push("/todo/" + name);
+	const handlePress = ({ name, id }: INote) => {
+		router.push({
+			pathname: "/todo/[name]",
+			params: { name, id }
+		});
 	};
 
 	return (
@@ -55,7 +58,7 @@ export default function IndexPage() {
 
 							return (
 								<View className="flex-row justify-between">
-									<Pressable onPress={() => handlePress(item.name)}>
+									<Pressable onPress={() => handlePress(item)}>
 										<Text style={{ color: "blue" }}>{substring}</Text>
 									</Pressable>
 									<Button title="X" onPress={() => deleteTodo(item.id)} />
