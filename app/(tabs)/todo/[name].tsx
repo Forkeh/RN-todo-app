@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import NotesEndpoints from "../../../services/NotesEndpoints";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "../../../firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 export default function TodoPage() {
 	const { name, id } = useLocalSearchParams<{ name: string; id: string }>();
@@ -33,17 +33,23 @@ export default function TodoPage() {
 			return;
 		}
 
-		setImagePath(result.assets[0].uri);
-	};
-
-	const handleImageUpload = async () => {
 		const res = await fetch(imagePath);
 		const blob = await res.blob();
 		const storageRef = ref(storage, `image_${id}`);
 
 		await uploadBytes(storageRef, blob);
+		setImagePath(result.assets[0].uri);
+	};
 
-		alert("Image uploaded!");
+	const handleRemoveImage = async () => {
+		const storageRef = ref(storage, `image_${id}`);
+
+		try {
+			await deleteObject(storageRef);
+			setImagePath("");
+		} catch (error) {
+			alert("Could not delete image: " +  error);
+		}
 	};
 
 	return (
@@ -54,14 +60,15 @@ export default function TodoPage() {
 				{imagePath && (
 					<>
 						<Image className="w-72 h-72" source={{ uri: imagePath }} />
-						<Pressable onPress={handleImageUpload}>
-							<Text>Upload image</Text>
+						<Pressable onPress={handleRemoveImage}>
+							<Text className="text-color-red">Remove image</Text>
 						</Pressable>
 					</>
 				)}
 				<Pressable onPress={handlePickImage}>
 					<Text>Pick image</Text>
 				</Pressable>
+
 				<Pressable onPress={handleUpdate}>
 					<Text>Finish</Text>
 				</Pressable>
