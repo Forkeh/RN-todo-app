@@ -1,9 +1,10 @@
-import { View, TextInput, Button, Image } from "react-native";
+import { View, TextInput, Button, Image, Pressable } from "react-native";
 import React from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import NotesEndpoints from "../../../services/NotesEndpoints";
 import * as ImagePicker from "expo-image-picker";
-
+import { storage } from "../../../firebase";
+import { ref, uploadBytes } from "firebase/storage";
 
 export default function TodoPage() {
 	const { name, id } = useLocalSearchParams<{ name: string; id: string }>();
@@ -19,26 +20,38 @@ export default function TodoPage() {
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			allowsEditing: true
-		})
+		});
 
 		if (result.canceled) {
 			return;
 		}
+
+		setImagePath(result.assets[0].uri);
+	};
+
+	const handleImageUpload = async () => {
+		const res = await fetch(imagePath);
+		const blob = await res.blob();
+		const storageRef = ref(storage, `image_${id}`)
 		
-		setImagePath(result.assets[0].uri)
+		await uploadBytes(storageRef, blob)
+
+		alert("Image uploaded!")
 	}
 
-	console.log(imagePath);
-	
 
 	return (
 		<View className="flex-1">
 			<View className="justify-center items-center p-5">
 				<Stack.Screen options={{ headerTitle: name }} />
 				<TextInput value={input} onChangeText={setInput} className="border p-2 m-2" />
-				<Button title="Update" onPress={handleUpdate} />
-				{imagePath && <Image style={{height: 300, width: 300}} source={{uri: imagePath}}/>}
-				<Button title="Pick image" onPress={handlePickImage} />
+				{imagePath && (
+					<>
+						<Image className="w-72 h-72" source={{ uri: imagePath }} />
+						<Pressable onPress={handleImageUpload}>Upload image</Pressable>
+					</>
+				)}
+				<Pressable onPress={handlePickImage}>Pick image</Pressable>
 			</View>
 		</View>
 	);
