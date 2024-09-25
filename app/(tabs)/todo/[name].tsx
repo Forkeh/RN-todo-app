@@ -67,34 +67,25 @@ export default function TodoPage() {
 				<Stack.Screen options={{ headerTitle: name }} />
 				<TextInput value={input} onChangeText={setInput} className="border p-2 m-2" />
 				{imagePath && (
-					<ScrollView >
-						{/* <FlatList
-							data={imagePath}
-							renderItem={({ item }) => (
-								<View style={{marginTop: 20}}>
-									<Image className="w-24 h-24" source={{ uri: item }} />
-									<Pressable onPress={() => handleRemoveImage(item)}>
-										<Text className="text-color-red">Remove image</Text>
-									</Pressable>
-								</View>
-							)}
-							
-						/> */}
-						{imagePath.map((image) => (
-							<View className="mr-5 mb-10" key={image}>
-								<Image className="w-52 h-52" source={{ uri: image }} />
-								<Pressable onPress={() => handleRemoveImage(image)}>
-									<Text className="text-color-red">Remove image</Text>
+					<FlatList
+						className="h-3/4"
+						keyExtractor={(item) => item}
+						data={imagePath}
+						renderItem={({ item }) => (
+							<View className="mt-2">
+								<Image className="w-36 h-36" source={{ uri: item }} />
+								<Pressable className="m-1 rounded-md shadow-md" onPress={() => handleRemoveImage(item)}>
+									<Text className="text-color-red text-center bg-red-300">Remove image</Text>
 								</Pressable>
 							</View>
-						))}
-					</ScrollView>
+						)}
+					/>
 				)}
-				<Pressable onPress={handlePickImage}>
+				<Pressable className="bg-blue-400 m-2 p-2 rounded-md shadow-md" onPress={handlePickImage}>
 					<Text>Pick image</Text>
 				</Pressable>
 
-				<Pressable onPress={handleUpdate}>
+				<Pressable className="bg-green-400 p-2 rounded-md shadow-md" onPress={handleUpdate}>
 					<Text>Finish</Text>
 				</Pressable>
 			</View>
