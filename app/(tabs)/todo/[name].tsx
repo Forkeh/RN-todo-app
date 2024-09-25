@@ -37,10 +37,7 @@ export default function TodoPage() {
 			return;
 		}
 
-		console.log(result);
-
 		const URIs = result.assets.map((r: any) => r.uri);
-		console.log(URIs);
 
 		for (let i = 0; i < URIs.length; i++) {
 			const imageUri = URIs[i];
@@ -70,18 +67,27 @@ export default function TodoPage() {
 				<Stack.Screen options={{ headerTitle: name }} />
 				<TextInput value={input} onChangeText={setInput} className="border p-2 m-2" />
 				{imagePath && (
-					<ScrollView horizontal>
-						<FlatList
+					<ScrollView >
+						{/* <FlatList
 							data={imagePath}
 							renderItem={({ item }) => (
-								<>
-									<Image className="w-72 h-72" source={{ uri: item }} />
+								<View style={{marginTop: 20}}>
+									<Image className="w-24 h-24" source={{ uri: item }} />
 									<Pressable onPress={() => handleRemoveImage(item)}>
 										<Text className="text-color-red">Remove image</Text>
 									</Pressable>
-								</>
+								</View>
 							)}
-						/>
+							
+						/> */}
+						{imagePath.map((image) => (
+							<View className="mr-5 mb-10" key={image}>
+								<Image className="w-52 h-52" source={{ uri: image }} />
+								<Pressable onPress={() => handleRemoveImage(image)}>
+									<Text className="text-color-red">Remove image</Text>
+								</Pressable>
+							</View>
+						))}
 					</ScrollView>
 				)}
 				<Pressable onPress={handlePickImage}>
