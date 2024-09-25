@@ -1,16 +1,23 @@
-import { View, TextInput, Button, Image, Pressable } from "react-native";
+import { View, TextInput, Button, Image, Pressable, Text } from "react-native";
 import React from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import NotesEndpoints from "../../../services/NotesEndpoints";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "../../../firebase";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function TodoPage() {
 	const { name, id } = useLocalSearchParams<{ name: string; id: string }>();
 	const [input, setInput] = React.useState(name);
 	const [imagePath, setImagePath] = React.useState("");
 	const router = useRouter();
+
+	React.useEffect(() => {
+		const storageRef = ref(storage, `image_${id}`);
+		getDownloadURL(storageRef)
+			.then((url) => setImagePath(url))
+			.catch((error) => console.log("Couldn't find the image:", error));
+	}, [id]);
 
 	const handleUpdate = () => {
 		NotesEndpoints.updateNote(id, { name: input });
@@ -32,13 +39,12 @@ export default function TodoPage() {
 	const handleImageUpload = async () => {
 		const res = await fetch(imagePath);
 		const blob = await res.blob();
-		const storageRef = ref(storage, `image_${id}`)
-		
-		await uploadBytes(storageRef, blob)
+		const storageRef = ref(storage, `image_${id}`);
 
-		alert("Image uploaded!")
-	}
+		await uploadBytes(storageRef, blob);
 
+		alert("Image uploaded!");
+	};
 
 	return (
 		<View className="flex-1">
@@ -48,10 +54,17 @@ export default function TodoPage() {
 				{imagePath && (
 					<>
 						<Image className="w-72 h-72" source={{ uri: imagePath }} />
-						<Pressable onPress={handleImageUpload}>Upload image</Pressable>
+						<Pressable onPress={handleImageUpload}>
+							<Text>Upload image</Text>
+						</Pressable>
 					</>
 				)}
-				<Pressable onPress={handlePickImage}>Pick image</Pressable>
+				<Pressable onPress={handlePickImage}>
+					<Text>Pick image</Text>
+				</Pressable>
+				<Pressable onPress={handleUpdate}>
+					<Text>Finish</Text>
+				</Pressable>
 			</View>
 		</View>
 	);
