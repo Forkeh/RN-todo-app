@@ -28,6 +28,17 @@ export default function TodoPage() {
 		router.back();
 	};
 
+	const uploadImages = async (URIs: string[]) => {
+		for (let i = 0; i < URIs.length; i++) {
+			const imageUri = URIs[i];
+			const res = await fetch(imageUri);
+			const blob = await res.blob();
+			const imageRef = ref(storage, `todo_images/${id}/image_${Date.now()}_${i}.jpg`);
+
+			await uploadBytes(imageRef, blob);
+		}
+	};
+
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			allowsMultipleSelection: true
@@ -39,14 +50,7 @@ export default function TodoPage() {
 
 		const URIs = result.assets.map((r: any) => r.uri);
 
-		for (let i = 0; i < URIs.length; i++) {
-			const imageUri = URIs[i];
-			const res = await fetch(imageUri);
-			const blob = await res.blob();
-			const imageRef = ref(storage, `todo_images/${id}/image_${Date.now()}_${i}.jpg`);
-
-			await uploadBytes(imageRef, blob);
-		}
+		await uploadImages(URIs);
 
 		setImagePath((prev) => [...prev, ...URIs]);
 	};
@@ -61,9 +65,37 @@ export default function TodoPage() {
 		}
 	};
 
+	const launchCamera = async () => {
+		// Permission
+		const permission = await ImagePicker.requestCameraPermissionsAsync(); // Ask for permission
+
+		if (!permission.granted) {
+			alert("Camera access not provided");
+			return;
+		}
+
+		// Launch camera
+		ImagePicker.launchCameraAsync({
+			quality: 1,
+			allowsEditing: true
+		})
+			.then((response) => {
+				if (response.canceled) {
+					throw new Error();
+				}
+
+				setImagePath((prev) => [...prev, response.assets[0].uri]);
+				return response.assets.map((r: any) => r.uri);
+			})
+			.then((URI) => uploadImages(URI))
+			.catch((error) => {
+				alert("Fejl med kameraet: " + error);
+			});
+	};
+
 	return (
 		<View className="flex-1">
-			<View className="justify-center items-center p-5">
+			<View className="flex-1 justify-center items-center p-5">
 				<Stack.Screen options={{ headerTitle: name }} />
 				<TextInput value={input} onChangeText={setInput} className="border p-2 m-2" />
 				{imagePath && (
@@ -83,6 +115,9 @@ export default function TodoPage() {
 				)}
 				<Pressable className="bg-blue-400 m-2 p-2 rounded-md shadow-md" onPress={handlePickImage}>
 					<Text>Pick image</Text>
+				</Pressable>
+				<Pressable className="bg-blue-400 m-2 p-2 rounded-md shadow-md" onPress={launchCamera}>
+					<Text>Take picture</Text>
 				</Pressable>
 
 				<Pressable className="bg-green-400 p-2 rounded-md shadow-md" onPress={handleUpdate}>
