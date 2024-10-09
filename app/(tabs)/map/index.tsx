@@ -20,14 +20,19 @@ const MapPage = () => {
 	const markers = values?.docs.map((doc) => ({ ...doc.data() })) as IMarker[];
 
 	React.useEffect(() => {
-		const storageRef = ref(storage, `map_images/`);
-		listAll(storageRef)
-			.then((result) => {
-				// Fetch URLs for all images
+		const fetchImageUrls = async () => {
+			try {
+				const storageRef = ref(storage, `map_images/`);
+				const result = await listAll(storageRef);
 				const urlPromises = result.items.map((imageRef) => getDownloadURL(imageRef));
-				Promise.all(urlPromises).then((urls) => setImagePath(urls));
-			})
-			.catch(() => console.log("No Images found"));
+				const urls = await Promise.all(urlPromises);
+				setImagePath(urls);
+			} catch (error) {
+				console.error("Error fetching images:", error);
+			}
+		};
+
+		fetchImageUrls();
 	}, []);
 
 	const uploadMarker = async (newMarker: IMarker) => {
