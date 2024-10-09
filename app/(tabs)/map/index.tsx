@@ -6,6 +6,7 @@ import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 import { database, storage } from "../../../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
+import { Svg, Image as ImageSvg } from "react-native-svg";
 
 interface IMarker {
 	coordinate: { latitude: number; longitude: number };
@@ -79,14 +80,15 @@ const MapPage = () => {
 					{markers.map((marker) => (
 						<Marker coordinate={marker.coordinate} key={marker?.key} title={marker?.title}>
 							<Callout>
-								<View className="p-5">
-                                    <Text>Test</Text>
-									<Text>
-										<Image
-											style={{ height: 100, width: 100 }}
-											source={{ uri: imagePath.find((i) => i.includes(String(marker.key))) }}
+								<View className="h-28 w-28">
+									<Svg width={"100%"} height={"100%"}>
+										<ImageSvg
+											width={"100%"}
+											height={"100%"}
+											preserveAspectRatio="xMidYMid slice"
+											href={{ uri: imagePath.find((i) => i.includes(String(marker.key))) }}
 										/>
-									</Text>
+									</Svg>
 								</View>
 							</Callout>
 						</Marker>
