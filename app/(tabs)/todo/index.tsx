@@ -92,7 +92,6 @@ const MyTodo = ({ item, handlePress, deleteTodo, onSwipeOff }: MyTodoProps) => {
 		.onUpdate((event) => {
 			"worklet";
 			translateX.value = event.translationX;
-			// rotate.value = -translateX.value / 25;
 		})
 		.onEnd(() => {
 			"worklet";
@@ -101,7 +100,6 @@ const MyTodo = ({ item, handlePress, deleteTodo, onSwipeOff }: MyTodoProps) => {
 				runOnJS(onSwipeOff)(item.id);
 			} else {
 				translateX.value = withSpring(0);
-				// rotate.value = withSpring(0);
 			}
 		});
 
