@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function TabsLayout() {
 	return (
@@ -11,13 +11,41 @@ export default function TabsLayout() {
 				headerTintColor: "#fff",
 				headerTitleStyle: {
 					fontWeight: "bold"
-                }
+				}
 			}}
 		>
-			<Tabs.Screen name="(home)" options={{headerShown: false, title: "Home", tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />}} />
-			<Tabs.Screen name="todo" options={{headerShown: false, title: "Todo", tabBarIcon: ({ color }) => <FontAwesome size={28} name="list" color={color} />}} />
-			<Tabs.Screen name="map" options={{headerShown: false, title: "Map", tabBarIcon: ({ color }) => <FontAwesome size={28} name="map" color={color} />}} />
-           
+			<Tabs.Screen
+				name="(home)"
+				options={{
+					headerShown: false,
+					title: "Home",
+					tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />
+				}}
+			/>
+			<Tabs.Screen
+				name="todo"
+				options={{
+					headerShown: false,
+					title: "Todo",
+					tabBarIcon: ({ color }) => <FontAwesome size={28} name="list" color={color} />
+				}}
+			/>
+			<Tabs.Screen
+				name="map"
+				options={{
+					headerShown: false,
+					title: "Map",
+					tabBarIcon: ({ color }) => <FontAwesome size={28} name="map" color={color} />
+				}}
+			/>
+			<Tabs.Screen
+				name="gestures"
+				options={{
+					headerShown: false,
+					title: "Gestures",
+					tabBarIcon: ({ color }) => <FontAwesome size={28} name="hand-pointer-o" color={color} />
+				}}
+			/>
 		</Tabs>
 	);
 }
